@@ -1,0 +1,11 @@
+-   repo: https://github.com/pre-commit/pre-commit-hooks.git
+    sha: '616c1ebd1898c91de9a0548866a59cbd9f4547f6'
+    hooks:
+    -   id: trailing-whitespace
+    -   id: check-json
+    -   id: check-yaml
+
+-   repo: https://github.com/jordant/rubocop-pre-commit-hook.git
+    sha: '4bf5ae7474c54183d1c6a2838e659d4936463951'
+    hooks:
+    -   id: check-rubocop

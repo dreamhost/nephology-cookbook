@@ -1,0 +1,37 @@
+AllCops:
+  Exclude:
+    - cookbooks/**/files/**/*
+    - cookbooks/**/.kitchen/**/*
+    - cookbooks/**/Vagrantfile*
+    - cookbooks/**/Berksfile
+
+ParenthesesAsGroupedExpression:
+  Enabled: false
+IndentHash:
+  Enabled: false
+FileName:
+  Enabled: false
+AlignParameters:
+  Enabled: false
+Encoding:
+  Enabled: false
+UselessAssignment:
+  Enabled: false
+StringLiterals:
+  Enabled: false
+LineLength:
+  Max: 300
+MethodLength:
+  Max: 11
+BracesAroundHashParameters:
+  Enabled: false
+PercentLiteralDelimiters:
+  Enabled: false
+HashSyntax:
+  Enabled: false
+IfUnlessModifier:
+  Enabled: false
+TrivialAccessors:
+  ExactNameMatch: true
+Style/RegexpLiteral:
+  Enabled: false

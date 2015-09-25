@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /opt/nephology-server
+exec 2>&1
+exec chpst -U nephology carton exec bin/nephology-server daemon
