@@ -37,7 +37,7 @@ end
 
 bash 'import nephology schema' do
   code <<-EOH
-    mysql -uroot -p#{node['nephology']['password']} < /opt/nephology-server/sql/schema.sql
+    mysql -uroot -p#{node['nephology']['password']} nephology < /opt/nephology-server/sql/schema.sql
   EOH
 end
 
