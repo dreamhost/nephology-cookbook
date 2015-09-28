@@ -22,6 +22,5 @@ end
 
 include_recipe 'git'
 
-# include_recipe 'nephology::ipxe'
-
+include_recipe 'nephology::dhcpd'
 include_recipe 'nephology::server'

@@ -12,9 +12,14 @@ template '/opt/ipxe/nephology.ipxe' do
   source 'nephology.ipxe.erb'
 end
 
+package "tftpd-hpa" do
+  action :install
+end
+
 bash 'build ipxe image' do
   cwd '/opt/ipxe/src'
   code <<-EOH
     make EMBED=/opt/ipxe/nephology.ipxe
+    cp bin/ipxe.pxe /var/lib/tftpboot/ipxe
   EOH
 end
