@@ -90,7 +90,7 @@ remote_file '/var/nephology/boot-images/vmlinuz' do
 end
 
 remote_file '/var/nephology/boot-images/initrd.gz' do
-  source ['nephology']['boot_initrd']
+  source node['nephology']['boot_initrd']
   mode '0755'
   action :create
 end
