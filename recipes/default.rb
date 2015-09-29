@@ -20,7 +20,13 @@ directory '/var/nephology/boot-images' do
   owner 'nephology'
 end
 
+directory '/etc/nephology' do
+  action :create
+  owner 'nephology'
+end
+
 include_recipe 'git'
 
+include_recipe 'nephology::nat'
 include_recipe 'nephology::dhcpd'
 include_recipe 'nephology::server'

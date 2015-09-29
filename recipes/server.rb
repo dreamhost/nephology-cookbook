@@ -63,6 +63,10 @@ template '/opt/nephology-server/etc/config.yaml' do
   source 'config.yaml.erb'
 end
 
+link '/etc/nephology/config.yaml' do
+  to '/opt/nephology-server/etc/config.yaml'
+end
+
 include_recipe 'runit'
 runit_service 'nephology-server' do
   default_logger true
@@ -83,6 +87,10 @@ nginx_site 'nephology' do
   template false
 end
 
+link '/var/nephology/scripts' do
+  to '/opt/nephology-server/scripts'
+end
+
 remote_file '/var/nephology/boot-images/vmlinuz' do
   source node['nephology']['boot_kernel']
   mode '0755'
@@ -93,4 +101,16 @@ remote_file '/var/nephology/boot-images/initrd.gz' do
   source node['nephology']['boot_initrd']
   mode '0755'
   action :create
+end
+
+package 'apt-cacher-ng' do
+  action :install
+end
+
+bash "create nephology ssh key" do
+  cwd '/etc/nephology'
+  code <<-EOH
+    ssh-keygen -f #{node['nephology']['ssh_key_file']} -t rsa -N ''
+  EOH
+  not_if { ::File.exists?("#{node['nephology']['ssh_key_file']}.pub") }
 end
