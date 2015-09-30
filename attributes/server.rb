@@ -1,4 +1,4 @@
-default['nephology']['server']['repo'] = 'https://github.com/jordant/nephology-server-perl.git'
+default['nephology']['server']['repo'] = 'https://github.com/dreamhost/nephology-server-perl.git'
 default['nephology']['server']['ref'] = 'HEAD'
 default['nephology']['ssh_key_file'] = '/etc/nephology/nephology.ssh'
 default['nephology']['mirror_addr'] = 'mirrors.dreamcompute.com'

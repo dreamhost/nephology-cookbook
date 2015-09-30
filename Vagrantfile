@@ -11,7 +11,12 @@ Vagrant.configure(2) do |config|
     v.cpus = 1
   end
   config.vm.provision "chef_solo" do |chef|
+    chef.json = {
+        "developer_mode" => true
+    }
     chef.cookbooks_path = "./"
-    chef.add_recipe 'nephology::default'
+    chef.add_recipe 'nephology::nat'
+    chef.add_recipe 'nephology::dhcpd'
+    chef.add_recipe 'nephology::server'
   end
 end

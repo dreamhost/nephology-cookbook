@@ -1,4 +1,5 @@
 include_recipe 'build-essential'
+include_recipe 'git'
 
 %w{ genisoimage liblzma-dev }.each { |pkg| package pkg }
 

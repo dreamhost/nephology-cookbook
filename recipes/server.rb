@@ -1,5 +1,30 @@
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-node.set_unless['nephology']['password'] = secure_password
+
+include_recipe 'git'
+
+if node["developer_mode"]
+  node.set_unless['nephology']['password'] = 'nephology'
+else
+  node.set_unless['nephology']['password'] = secure_password
+end
+
+user 'nephology' do
+  comment 'nephology user'
+  home '/var/nephology'
+  shell '/bin/bash'
+  action :create
+  manage_home true
+end
+
+directory '/var/nephology/boot-images' do
+  action :create
+  owner 'nephology'
+end
+
+directory '/etc/nephology' do
+  action :create
+  owner 'nephology'
+end
 
 git '/opt/nephology-server' do
   repository node['nephology']['server']['repo']
