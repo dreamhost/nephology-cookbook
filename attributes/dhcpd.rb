@@ -1,0 +1,9 @@
+default['nephology']['dhcp_subnet'] = '10.0.3.0'
+default['nephology']['dhcp_range'] = [ '10.0.3.10 10.0.3.254' ]
+default['nephology']['dhcp_netmask'] = '255.255.255.0'
+default['nephology']['dhcp_broadcast'] = '10.0.3.255'
+default['nephology']['dhcp_routers'] = [ '10.0.3.2' ]
+default['nephology']['dhcp_next_server'] = '10.0.3.2'
+default['dhcp']['interfaces'] = [ node['nephology']['interface'] ]
+default['dhcp']['parameters']['default-lease-time'] = '86400'
+default['dhcp']['parameters']['max-lease-time'] = '86400'

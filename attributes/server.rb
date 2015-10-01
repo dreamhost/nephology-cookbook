@@ -1,3 +1,7 @@
+default['nephology']['db']['user'] = 'nephology'
+default['nephology']['db']['name'] = 'nephology'
+default['nephology']['db']['host'] = '127.0.0.1'
+default['nephology']['server']['discovery'] = 'enable'
 default['nephology']['server']['repo'] = 'https://github.com/dreamhost/nephology-server-perl.git'
 default['nephology']['server']['ref'] = 'HEAD'
 default['nephology']['ssh_key_file'] = '/etc/nephology/nephology.ssh'

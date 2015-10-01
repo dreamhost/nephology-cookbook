@@ -1,14 +1,15 @@
-include_recipe 'nephology::ipxe'
+include_recipe 'dhcp::server'
 
-package 'isc-dhcp-server' do
-  action :install
-end
-
-execute "restart dhcpd" do
-  command 'service isc-dhcp-server restart'
-end
-
-cookbook_file '/etc/dhcp/dhcpd.conf' do
-  source 'dhcpd.conf'
-  notifies :run, 'execute[restart dhcpd]', :immediately
-end
+dhcp_subnet node['nephology']['dhcp_subnet'] do
+  pool do
+    range node['nephology']['dhcp_range']
+  end
+  netmask node['nephology']['dhcp_netmask']
+  broadcast node['nephology']['dhcp_broadcast']
+  options [ "time-offset 10" ]
+  next_server node['nephology']['dhcp_next_server']
+  routers node['nephology']['dhcp_routers']
+  evals [ %q|
+    filename "/ipxe";
+  | ]
+end 

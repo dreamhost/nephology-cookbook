@@ -1,3 +1,6 @@
+# mainly for the vagrant nephology network, can be used in some
+# special network cases
+
 bash 'setup nat' do
   code <<-EOH
     echo 1 > /proc/sys/net/ipv4/ip_forward

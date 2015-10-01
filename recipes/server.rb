@@ -1,11 +1,22 @@
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
 include_recipe 'git'
+include_recipe 'cpan'
+include_recipe 'runit'
+include_recipe 'nginx'
+
+package_depends = %w{ carton perl-doc apt-cacher-ng }
+
+package package_depends do
+  action :install
+end
 
 if node["developer_mode"]
-  node.set_unless['nephology']['password'] = 'nephology'
+  node.set_unless['nephology']['db']['password'] = 'nephology'
+  node.set_unless['nephology']['db']['rootpass'] = 'nephology'
 else
-  node.set_unless['nephology']['password'] = secure_password
+  node.set_unless['nephology']['db']['password'] = secure_password
+  node.set_unless['nephology']['db']['rootpass'] = secure_password
 end
 
 user 'nephology' do
@@ -26,10 +37,16 @@ directory '/etc/nephology' do
   owner 'nephology'
 end
 
+runit_service 'nephology-server' do
+  default_logger true
+  finish true
+end
+
 git '/opt/nephology-server' do
   repository node['nephology']['server']['repo']
   reference node['nephology']['server']['ref']
   action :sync
+  notifies :restart, "runit_service[nephology-server]"
 end
 
 mysql2_chef_gem 'default' do
@@ -44,61 +61,59 @@ mysql_service 'nephology' do
   port '3306'
   version '5.5'
   socket '/var/run/mysqld/mysqld.sock'
-  initial_root_password node['nephology']['password']
+  initial_root_password node['nephology']['db']['rootpass']
   action [:create, :start]
 end
+  node['nephology']['db']['password']
 
 mysql_connection_info  = {
-    :host     => '127.0.0.1',
+    :host     => node['nephology']['db']['host'],
     :username => 'root',
     :socket   => '/var/run/mysql/mysqld.sock',
-    :password => node['nephology']['password']
+    :password => node['nephology']['db']['rootpass']
 }
 
-mysql_database 'nephology' do
+mysql_database node['nephology']['db']['name'] do
   connection mysql_connection_info
   action :create
 end
 
+mysql_database_user node['nephology']['db']['user'] do
+  connection mysql_connection_info
+  password node['nephology']['db']['password']
+  database_name node['nephology']['db']['name']
+  host '%'
+  privileges [:all]
+  require_ssl false
+  action :grant
+end
+
 bash 'import nephology schema' do
   code <<-EOH
-    mysql -uroot -p#{node['nephology']['password']} nephology < /opt/nephology-server/sql/schema.sql
+    mysql -u#{node['nephology']['db']['user']} -p#{node['nephology']['db']['password']} #{node['nephology']['db']['name']} < /opt/nephology-server/sql/schema.sql
   EOH
 end
 
-include_recipe 'cpan'
-
-cpan_client 'Carton' do
-  user 'root'
-  group 'root'
-  force true
-  install_type 'cpan_module'
-  action 'install'
-end
-
-
-bash 'carton install' do
+bash 'carton install nephology server depends' do
   cwd '/opt/nephology-server'
   code <<-EOH
     carton install
   EOH
 end
 
+int = node['nephology']['interface']
+neph_ip = node['network']['interfaces'][int]['addresses'].map {|i| i.first if i.last["family"].eql?("inet") }.compact.first
 template '/opt/nephology-server/etc/config.yaml' do
   source 'config.yaml.erb'
+  variables(
+    'neph_ip' => neph_ip
+  )
+  notifies :restart, "runit_service[nephology-server]"
 end
 
 link '/etc/nephology/config.yaml' do
   to '/opt/nephology-server/etc/config.yaml'
 end
-
-include_recipe 'runit'
-runit_service 'nephology-server' do
-  default_logger true
-  finish true
-end
-
-include_recipe 'nginx'
 
 template "/etc/nginx/sites-available/nephology" do
   source "nephology-site.erb"
@@ -126,10 +141,6 @@ remote_file '/var/nephology/boot-images/initrd.gz' do
   source node['nephology']['boot_initrd']
   mode '0755'
   action :create
-end
-
-package 'apt-cacher-ng' do
-  action :install
 end
 
 bash "create nephology ssh key" do

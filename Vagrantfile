@@ -16,6 +16,7 @@ Vagrant.configure(2) do |config|
     }
     chef.cookbooks_path = "./"
     chef.add_recipe 'nephology::nat'
+    chef.add_recipe 'nephology::ipxe'
     chef.add_recipe 'nephology::dhcpd'
     chef.add_recipe 'nephology::server'
   end
