@@ -1,4 +1,5 @@
 #!/bin/sh
 cd /opt/nephology-server
+export MOJO_REVERSE_PROXY=1
 exec 2>&1
 exec chpst -U nephology carton exec bin/nephology-server daemon
