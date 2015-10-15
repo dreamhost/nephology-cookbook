@@ -5,7 +5,7 @@ include_recipe 'cpan'
 include_recipe 'runit'
 include_recipe 'nginx'
 
-package_depends = %w{ carton perl-doc apt-cacher-ng }
+package_depends = %w{ carton perl-doc apt-cacher-ng dnsmasq }
 
 package package_depends do
   action :install

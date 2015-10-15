@@ -2,6 +2,7 @@
 server_addr: <%= @neph_ip  %>
 # mirror_addr is the IP/hostname of an HTTP server with an ubuntu mirror
 mirror_addr: <%= node['nephology']['mirror_addr'] %>
+dns_server: <%= node['nephology']['server']['dns_server'] %>
 db_name: <%= node['nephology']['db']['name'] %>
 db_username: <%= node['nephology']['db']['user'] %>
 db_password: <%= node['nephology']['db']['password'] %>
@@ -10,3 +11,5 @@ db_host: <%= node['nephology']['db']['host'] %>
 db_socket: /var/run/mysqld/mysqld.sock
 discovery: <%= node['nephology']['server']['discovery'] %>
 pub_ssh_key_file: <%= node['nephology']['ssh_key_file'] %>.pub
+default_domain: <%= node['nephology']['server']['default_domain'] %>
+discovery_node_status: <%= node['nephology']['server']['discovery_node_status'] %>
