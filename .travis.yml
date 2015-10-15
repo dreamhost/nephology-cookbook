@@ -1,0 +1,10 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.1.5
+
+bundler_args: --without integration development
+before_script:
+  - bundle exec berks
+script:
+  - bundle exec rubocop
